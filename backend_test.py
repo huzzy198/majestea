@@ -116,7 +116,7 @@ class MajesteatAPITester:
                 
             # Check for required categories (French names)
             category_names = [cat.get("name", "").lower() for cat in data]
-            expected_categories = ["plats principaux", "entrées", "salades", "desserts"]
+            expected_categories = ["plats principaux", "entrées", "salades", "desserts & douceurs"]
             
             for expected in expected_categories:
                 if expected not in category_names:
