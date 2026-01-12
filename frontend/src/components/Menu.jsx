@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { Utensils, Salad, Cookie, Soup } from 'lucide-react';
-import { menuCategories } from '../data/mock';
+import { Utensils, Salad, Cookie, Soup, Loader2 } from 'lucide-react';
+import { useData } from '../context/DataContext';
 import { PeonyFlower, FloralDivider, GoldAccent, LeafBranch, RoseOutline } from './FloralDecorations';
 
 const categoryIcons = {
@@ -14,7 +14,16 @@ const categoryIcons = {
 };
 
 const Menu = () => {
+  const { menuCategories, loading } = useData();
   const [activeCategory, setActiveCategory] = useState('mains');
+
+  if (loading) {
+    return (
+      <section id="menu" className="py-24 bg-gradient-to-b from-rose-50/50 via-white to-amber-50/30 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-rose-600" />
+      </section>
+    );
+  }
 
   return (
     <section id="menu" className="py-24 bg-gradient-to-b from-rose-50/50 via-white to-amber-50/30 relative overflow-hidden">
@@ -63,7 +72,7 @@ const Menu = () => {
         <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
           <TabsList className="flex flex-wrap justify-center gap-2 bg-transparent h-auto p-0 mb-12">
             {menuCategories.map((category) => {
-              const Icon = categoryIcons[category.id];
+              const Icon = categoryIcons[category.id] || Utensils;
               return (
                 <TabsTrigger
                   key={category.id}
