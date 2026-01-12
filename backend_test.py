@@ -157,8 +157,8 @@ class MajesteatAPITester:
                 self.log_test("Menu Category", False, "Expected object response", data)
                 return False
                 
-            if data.get("name", "").lower() != "mains":
-                self.log_test("Menu Category", False, f"Expected category 'mains', got '{data.get('name')}'", data)
+            if data.get("id") != "mains":
+                self.log_test("Menu Category", False, f"Expected category ID 'mains', got '{data.get('id')}'", data)
                 return False
                 
             if not data.get("items") or len(data["items"]) == 0:
