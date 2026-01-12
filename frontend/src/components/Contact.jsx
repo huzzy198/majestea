@@ -5,11 +5,15 @@ import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Card, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { MapPin, Phone, Clock, Mail, Send, Calendar, Users, Instagram } from 'lucide-react';
-import { restaurantInfo } from '../data/mock';
+import { MapPin, Phone, Clock, Send, Calendar, Users, Instagram, Loader2 } from 'lucide-react';
+import { useData } from '../context/DataContext';
+import { createReservation } from '../services/api';
 import { toast } from 'sonner';
+import { PeonyFlower, FloralDivider, GoldAccent } from './FloralDecorations';
 
 const Contact = () => {
+  const { restaurantInfo } = useData();
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,25 +36,42 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.name || !formData.phone || !formData.date || !formData.time || !formData.guests) {
+      toast.error('Veuillez remplir tous les champs obligatoires');
+      return;
+    }
+    
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast.success('Demande envoyée !', {
-      description: 'Nous vous contacterons rapidement pour confirmer votre réservation.',
-    });
-    
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      date: '',
-      time: '',
-      guests: '',
-      message: ''
-    });
-    setIsSubmitting(false);
+    try {
+      const response = await createReservation(formData);
+      
+      if (response.success) {
+        toast.success('Demande envoyée !', {
+          description: response.message || 'Nous vous contacterons rapidement pour confirmer votre réservation.',
+        });
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          date: '',
+          time: '',
+          guests: '',
+          message: ''
+        });
+      }
+    } catch (error) {
+      console.error('Reservation error:', error);
+      toast.error('Erreur lors de l\'envoi', {
+        description: 'Veuillez réessayer ou nous appeler directement.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const timeSlots = [
@@ -67,17 +88,24 @@ const Contact = () => {
       <div className="absolute top-0 right-0 w-96 h-96 bg-rose-100/30 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-100/30 rounded-full blur-3xl" />
       
+      {/* Floral decorations */}
+      <div className="absolute top-20 left-10 opacity-30 hidden lg:block">
+        <PeonyFlower size="xl" />
+      </div>
+      <div className="absolute bottom-40 right-10 opacity-25 hidden lg:block">
+        <PeonyFlower size="lg" />
+      </div>
+      
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-12 h-0.5 bg-rose-400" />
-            <span className="text-rose-600 font-medium uppercase tracking-wider text-sm">Réservation</span>
-            <div className="w-12 h-0.5 bg-rose-400" />
-          </div>
+          <FloralDivider className="mb-6" />
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-stone-800 mb-4">
             Réservez votre <span className="text-rose-700">table</span>
           </h2>
+          <div className="flex justify-center mb-4">
+            <GoldAccent className="w-40 h-5" />
+          </div>
           <p className="text-stone-600 max-w-2xl mx-auto text-lg">
             Contactez-nous pour réserver votre moment de gourmandise chez Majestea
           </p>
@@ -177,8 +205,13 @@ const Contact = () => {
           </div>
 
           {/* Reservation Form */}
-          <Card className="bg-white/90 backdrop-blur-sm border-rose-100 shadow-xl">
-            <CardContent className="p-8">
+          <Card className="bg-white/90 backdrop-blur-sm border-rose-100 shadow-xl relative overflow-hidden">
+            {/* Decorative flower */}
+            <div className="absolute -top-8 -right-8 opacity-10">
+              <PeonyFlower size="xl" />
+            </div>
+            
+            <CardContent className="p-8 relative z-10">
               <h3 className="font-serif text-2xl font-bold text-stone-800 mb-6">
                 Demande de réservation
               </h3>
@@ -290,10 +323,7 @@ const Contact = () => {
                 >
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
+                      <Loader2 className="w-5 h-5 animate-spin" />
                       Envoi en cours...
                     </span>
                   ) : (
