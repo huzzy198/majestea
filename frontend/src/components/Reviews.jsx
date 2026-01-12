@@ -1,10 +1,20 @@
 import React from 'react';
 import { Card, CardContent } from './ui/card';
-import { Star, Quote } from 'lucide-react';
-import { reviews, restaurantInfo } from '../data/mock';
+import { Star, Quote, Loader2 } from 'lucide-react';
+import { useData } from '../context/DataContext';
 import { PeonyFlower, FloralDivider, GoldAccent, LeafBranch, RoseOutline } from './FloralDecorations';
 
 const Reviews = () => {
+  const { reviews, restaurantInfo, loading } = useData();
+
+  if (loading) {
+    return (
+      <section id="avis" className="py-24 bg-gradient-to-b from-white via-rose-50/30 to-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-rose-600" />
+      </section>
+    );
+  }
+
   return (
     <section id="avis" className="py-24 bg-gradient-to-b from-white via-rose-50/30 to-white relative overflow-hidden">
       {/* Decorative elements */}
