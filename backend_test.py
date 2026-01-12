@@ -114,9 +114,9 @@ class MajesteatAPITester:
                 self.log_test("Menu", False, f"Expected 4 categories, got {len(data)}", data)
                 return False
                 
-            # Check for required categories
+            # Check for required categories (French names)
             category_names = [cat.get("name", "").lower() for cat in data]
-            expected_categories = ["mains", "starters", "salads", "desserts"]
+            expected_categories = ["plats principaux", "entrées", "salades", "desserts"]
             
             for expected in expected_categories:
                 if expected not in category_names:
