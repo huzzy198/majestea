@@ -1,10 +1,12 @@
 import React from 'react';
 import { Button } from './ui/button';
 import { Star, MapPin, Clock, Sparkles } from 'lucide-react';
-import { restaurantInfo, heroImage } from '../data/mock';
+import { useData } from '../context/DataContext';
 import { FloralCorner, PeonyFlower, LeafBranch, GoldAccent, WatercolorBlob } from './FloralDecorations';
 
 const Hero = () => {
+  const { restaurantInfo, heroImage } = useData();
+
   const scrollToSection = (href) => {
     const element = document.querySelector(href);
     if (element) {
