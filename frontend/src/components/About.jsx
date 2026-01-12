@@ -1,9 +1,11 @@
 import React from 'react';
 import { Heart, Users, Sparkles, Coffee } from 'lucide-react';
-import { aboutImage } from '../data/mock';
-import { PeonyFlower, LeafBranch, FloralDivider, GoldAccent, RoseOutline } from './FloralDecorations';
+import { useData } from '../context/DataContext';
+import { PeonyFlower, LeafBranch, GoldAccent, RoseOutline } from './FloralDecorations';
 
 const About = () => {
+  const { aboutImage } = useData();
+  
   const features = [
     {
       icon: Heart,
