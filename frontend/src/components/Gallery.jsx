@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { AspectRatio } from './ui/aspect-ratio';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-import { X, ZoomIn } from 'lucide-react';
-import { galleryImages } from '../data/mock';
+import { ZoomIn, Loader2 } from 'lucide-react';
+import { useData } from '../context/DataContext';
 
 const Gallery = () => {
+  const { galleryImages, loading } = useData();
   const [selectedImage, setSelectedImage] = useState(null);
 
   const categories = [
@@ -21,6 +22,14 @@ const Gallery = () => {
   const filteredImages = activeFilter === 'all'
     ? galleryImages
     : galleryImages.filter(img => img.category === activeFilter);
+
+  if (loading) {
+    return (
+      <section id="galerie" className="py-24 bg-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-rose-600" />
+      </section>
+    );
+  }
 
   return (
     <section id="galerie" className="py-24 bg-white relative overflow-hidden">
